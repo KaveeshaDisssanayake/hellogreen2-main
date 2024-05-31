@@ -1,0 +1,35 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+type AuthProvides {
+  credentials Boolean @default(false)
+  google      Boolean @default(false)
+  github      Boolean @default(false)
+}
+
+type emailVarification {
+  verified    Boolean @default(false)
+  token       String
+  tokenExpiry Int
+}
+
+type passwordReset {
+  token       String
+  tokenExpiry Int
+}
+
+model User {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  username          String            @unique
+  email             String            @unique
+  password          String
+  authProviders     AuthProvides
+  emailVarification emailVarification
+  passwordReset     passwordReset?
+}
